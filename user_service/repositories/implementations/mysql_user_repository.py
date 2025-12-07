@@ -5,12 +5,10 @@ from user_service.repositories.user_repository import IUserRepository
 class MySqlUserRepository(IUserRepository):
 
     def create_user(self, user: User) -> User:
-        self.db.add(user)
-        self.db.flush()
-        return user
+        pass
 
     def get_user_by_email(self, email: str) -> User:
-        return self.db.query(User).where(User.email == email).first()
+        pass
 
     def get_user(self, user_id: str):
-        return self.db.get(User, user_id)
+        pass
