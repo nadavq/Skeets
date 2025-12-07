@@ -5,8 +5,8 @@ from pymongo.results import InsertOneResult
 
 from language_service.core.repositories_dependencies import get_flashcards_repository
 from language_service.repositories.flashcard_repository import IFlashcardsRepository
-from shared.schema.flashcards import FlashCardCreate, FlashCardSet, FlashCardsSetFromTextCreate
-from shared.schema.flashcards import Flashcard
+from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, Flashcard, FlashCardSet, \
+    FlashCardsSetFromTextCreate, FlashCardRead
 
 
 class FlashcardsService:
@@ -14,9 +14,9 @@ class FlashcardsService:
         self.db = db
         self.repo: IFlashcardsRepository = get_flashcards_repository(db)
 
-    def get_flashcards(self, user_id: str):
-        flash_cards = self.repo.get_user_flashcards(user_id)
-        return flash_cards
+    def get_flashcards(self, user_id: str, set_id) -> List[FlashCardRead]:
+        flash_cards = self.repo.get_user_flashcards(user_id, set_id)
+        return list(map(lambda card: FlashCardRead.model_validate(card), flash_cards))
 
     def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[FlashCardCreate]):
         flashcards: List[Flashcard] = []
@@ -37,7 +37,8 @@ class FlashcardsService:
         flashcards = []
 
         for pair in split:
-            flashcard = Flashcard(front=pair[0], back=pair[1])
+            pair_split = pair.split(",")
+            flashcard = Flashcard(front=pair_split[0], back=pair_split[1])
             flashcards.append(flashcard)
 
         flashcards_payload = jsonable_encoder(flashcards or [])
@@ -45,3 +46,6 @@ class FlashcardsService:
                                                                 flashcards_payload)
         new_set = self.repo.get_set(new_set_res.inserted_id)
         return new_set
+
+    def update_flashcard(self, user_id: str, update_flashcard_write: UpdateFlashCard):
+        self.repo.update_flashcard(user_id, update_flashcard_write.id, update_flashcard_write.set_id, update_flashcard_write.status)

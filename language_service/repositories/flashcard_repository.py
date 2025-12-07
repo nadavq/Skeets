@@ -2,9 +2,10 @@ from abc import abstractmethod
 from typing import List
 
 from bson import ObjectId
-from pymongo.results import UpdateResult, InsertOneResult
+from pymongo.results import InsertOneResult
 
-from shared.schema.flashcards import Flashcard
+from shared.schema.flashcards.enums import FlashcardStatus
+from shared.schema.flashcards.flashcards import Flashcard
 
 
 class IFlashcardsRepository:
@@ -13,7 +14,7 @@ class IFlashcardsRepository:
         self.collection = db["flashcards_sets"]
 
     @abstractmethod
-    def get_user_flashcards(self, user_id: str):
+    def get_user_flashcards(self, user_id: str, set_id: str):
         pass
 
     def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[Flashcard]):
@@ -26,4 +27,7 @@ class IFlashcardsRepository:
         pass
 
     def get_user_sets(self, user_id: str):
+        pass
+
+    def update_flashcard(self, user_id: str, flash_card_id: str, set_id: str, status: FlashcardStatus):
         pass

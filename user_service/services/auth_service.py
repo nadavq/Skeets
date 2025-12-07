@@ -2,14 +2,14 @@ import datetime
 import os
 from datetime import datetime
 from datetime import timedelta, timezone
-
 from dotenv import load_dotenv
 from fastapi import HTTPException, Depends
-from fastapi.openapi.models import Response
+from fastapi import Response
 from jose import jwt
 
 from user_service.core.repositories_dependencies import get_user_repository
 from user_service.db.db import db_dep
+from user_service.exceptions.AuthException import AuthException
 from user_service.model.user import User
 from shared.security import pwd_context
 from user_service.repositories.implementations.mysql_user_repository import IUserRepository
@@ -17,6 +17,7 @@ from user_service.schema.auth import JwtTokenRead
 from user_service.security import oauth2_bearer
 
 load_dotenv()
+IS_PROD = os.getenv("ENV") == "production"
 
 
 def create_access_token(user: User) -> JwtTokenRead:
@@ -37,19 +38,14 @@ class AuthService:
         try:
             user = self.users.get_user_by_email(username)
             if user is None:
-                raise Exception(f'The user with email {username} was not found')
+                raise AuthException(f'The user with email {username} was not found')
             elif not pwd_context.verify(password, user.password):
                 raise Exception('Email or password incorrect')
 
             token_obj = create_access_token(user)
-            response.set_cookie(
-                key="jwt",
-                value=token_obj.access_token,
-                httponly=True,
-                secure=True,  # use HTTPS in production
-                samesite="lax",
-            )
             return token_obj
+        except AuthException as ae:
+            raise HTTPException(status_code=401, detail=str(ae))
         except Exception as e:
             raise HTTPException(status_code=404, detail=str(e))
 

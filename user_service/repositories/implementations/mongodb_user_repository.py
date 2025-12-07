@@ -30,10 +30,10 @@ class MongoDbUserRepository(IUserRepository):
         doc = self.collection.find_one({"_id": result.inserted_id})
         return self.get_user_from_doc(doc)
 
-    def get_user_by_email(self, email: str) -> User:
+    def get_user_by_email(self, email: str) -> User | None:
         doc = self.collection.find_one({"email": email})
         if not doc:
-            raise Exception("User with email '{}' not found".format(email))
+            return None
         return self.get_user_from_doc(doc)
 
     def get_user(self, user_id: str) -> User:

@@ -6,13 +6,14 @@ pydantic~=2.12.4
 passlib~=1.7.4
 python-dotenv~=1.2.1
 python-jose~=3.5.0
-bcrypt~=4.3.0
+bcrypt==4.0.1
+passlib[bcrypt]==1.7.4
 pydantic[email]
 mysql
 mysql-connector-python
 python-multipart
 pymongo~=4.15.4
-
+uvicorn
 httpx~=0.28.1
 pydantic_core~=2.41.5
 starlette~=0.49.3

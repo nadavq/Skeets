@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 from pydantic import TypeAdapter
 from fastapi.encoders import jsonable_encoder
 
-from shared.schema.flashcards import FlashCardCreate, FlashCardSet, FlashCardSetRead, FlashCardRead, \
-    FlashCardsSetFromTextCreate
+from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardRead, FlashCardSetRead, FlashCardCreate, \
+    FlashCardsSetFromTextCreate, FlashCardSet
 
 load_dotenv()
 LANGUAGE_SERVICE_BASE_URL = os.environ.get("LANGUAGE_SERVICE_BASE_URL")
@@ -17,9 +17,9 @@ class RemoteLanguageService:
     def __init__(self):
         self.base_url = LANGUAGE_SERVICE_BASE_URL
 
-    async def fetch_flashcards(self, user_id) -> List[FlashCardRead]:
+    async def fetch_flashcards(self, user_id, set_id: str) -> List[FlashCardRead]:
         async with httpx.AsyncClient(timeout=30.0) as client:
-            flashcards = await client.get(f"{LANGUAGE_SERVICE_BASE_URL}/flashcards/{user_id}")
+            flashcards = await client.get(f"{LANGUAGE_SERVICE_BASE_URL}/flashcards/flashcards/{user_id}/{set_id}")
             flashcards.raise_for_status()
             flashcards = flashcards.json()
 
@@ -47,15 +47,21 @@ class RemoteLanguageService:
 
     async def get_sets(self, user_id: str) -> List[FlashCardSetRead]:
         async with httpx.AsyncClient(timeout=30.0) as client:
-            sets = await client.get(f"{LANGUAGE_SERVICE_BASE_URL}/flashcards/sets/{user_id}")
-            sets.raise_for_status()
+            print(f"Making request to - {LANGUAGE_SERVICE_BASE_URL}/flashcards/sets/{user_id}")
+            try:
+                sets = await client.get(f"{LANGUAGE_SERVICE_BASE_URL}/flashcards/sets/{user_id}")
+                print(str(sets.json()))
+                sets.raise_for_status()
 
-            sets_read = []
+                sets_read = []
 
-            for s in sets.json():
-                sets_read.append(FlashCardSetRead.model_validate(s))
+                for s in sets.json():
+                    sets_read.append(FlashCardSetRead.model_validate(s))
 
-            return sets_read
+                return sets_read
+            except Exception as e:
+                print(e)
+                return []
 
     async def create_set_from_text(self, user_id: str,
                                    set_from_text_create: FlashCardsSetFromTextCreate) -> FlashCardSet:
@@ -66,3 +72,9 @@ class RemoteLanguageService:
 
             d = FlashCardSet.model_validate(new_set.json())
             return d
+
+    async def update_flashcard_status(self, user_id: str, update_flashcard: UpdateFlashCard):
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            res = await client.put(f"{LANGUAGE_SERVICE_BASE_URL}/flashcards/{user_id}",
+                                   json=update_flashcard.model_dump())
+            res.raise_for_status()

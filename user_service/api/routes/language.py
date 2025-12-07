@@ -3,15 +3,16 @@ from typing import List
 from fastapi import APIRouter
 
 from shared.common import user_dep
-from shared.schema.flashcards import FlashCardCreate, FlashCardSetRead, FlashCardsSetFromTextCreate
+from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
+    FlashCardsSetFromTextCreate
 from user_service.services.language_service import LanguageService
 
 router = APIRouter(prefix="/language", tags=["Language"])
 
 
-@router.get("/flashcards")
-async def get_flashcards(user_id: user_dep):
-    return await LanguageService().get_flashcards(user_id)
+@router.get("/flashcards/{set_id}")
+async def get_flashcards(user_id: user_dep, set_id: str):
+    return await LanguageService().get_flashcards(user_id, set_id)
 
 
 @router.post("/flashcards")
@@ -37,3 +38,8 @@ async def create_flashcard(user_id: user_dep, set_name: str, flashcard: FlashCar
 @router.post("/create-set-from-text")
 async def create_set_from_text(user_id: user_dep, set_from_text_create: FlashCardsSetFromTextCreate):
     return await LanguageService().create_set_from_text(user_id, set_from_text_create)
+
+
+@router.put("/flashcard/status")
+async def update_flashcard_status(user_id: user_dep, update_flashcard: UpdateFlashCard):
+    return await LanguageService().update_flashcard_status(user_id, update_flashcard)
