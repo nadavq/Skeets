@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends
 
-from user_service.services.auth_service import AuthService, get_auth_service
-from user_service.services.auth_service import current_user_id
+from services.auth_service import current_user_id
 
 #
 # def current_user(
