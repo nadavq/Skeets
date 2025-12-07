@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .api.routes.flash_cards import router as flash_cards_router
+from api.routes.flash_cards import router as flash_cards_router
 
 app = FastAPI()
 

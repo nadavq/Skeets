@@ -16,7 +16,7 @@ class Flashcard(BaseModel):
     num_of_learning: int = Field(default=0)
 
     model_config = {
-        "populate_by_alias": True
+        "populate_by_name": True
     }
 
 
@@ -26,15 +26,21 @@ class FlashCardCreate(BaseModel):
 
 
 class FlashCardRead(BaseModel):
-    id: str
+    id: str = Field(alias="_id")
     front: str
     back: str
     status: FlashcardStatus
     num_of_remembers: int
     num_of_learning: int
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True,
+        "populate_by_name": True
+    }
+
+    @field_validator("id", mode="before")
+    def isolate_id(cls, v):
+        return convert_object_id_to_str(v)
 
 
 # class FlashCardSetCreate(BaseModel):
@@ -58,7 +64,7 @@ class FlashCardSet(BaseModel):
 
 
 class FlashCardSetRead(BaseModel):
-    id: str
+    id: str = Field(alias="_id")
     name: str
     flashcards: List[FlashCardRead] | None = None
 
@@ -66,6 +72,10 @@ class FlashCardSetRead(BaseModel):
         "from_attributes": True,
         "populate_by_name": True
     }
+
+    @field_validator("id", mode="before")
+    def isolate_id(cls, v):
+        return convert_object_id_to_str(v)
 
 
 class FlashCardsSetFromTextCreate(BaseModel):
