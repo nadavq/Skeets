@@ -47,7 +47,6 @@ class FlashcardsService:
                                                                 flashcards_payload)
         new_set = self.repo.get_set(new_set_res.inserted_id)
         return FlashCardSetRead.model_validate(new_set)
-        # return new_set
 
     def update_flashcard(self, user_id: str, update_flashcard_write: UpdateFlashCard):
         self.repo.update_flashcard(user_id, update_flashcard_write.id, update_flashcard_write.set_id,

@@ -43,11 +43,6 @@ class FlashCardRead(BaseModel):
         return convert_object_id_to_str(v)
 
 
-# class FlashCardSetCreate(BaseModel):
-#     name: str
-#     user_id: str
-
-
 class FlashCardSet(BaseModel):
     id: str = Field(alias="_id")
     name: str

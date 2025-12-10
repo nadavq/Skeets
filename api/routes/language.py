@@ -11,14 +11,9 @@ from services.language_service import LanguageService
 router = APIRouter(prefix="/language", tags=["Language"])
 
 
-@router.get("/flashcards/{set_id}", response_model=List[FlashCardRead])
+@router.get("/flashcards/{set_id}", response_model=List[FlashCardRead], response_model_by_alias=False)
 def get_flashcards(user_id: user_dep, set_id: str, db: db_dep):
     return LanguageService(db).get_flashcards(user_id, set_id)
-
-
-# @router.post("/{set_name}/flashcards")
-# def create_flashcards(user_id: user_dep, flashcards: List[FlashCardCreate], db: db_dep):
-#     return LanguageService().create_flashcards(user_id, flashcards, db)
 
 
 @router.post("/new-set/{name}")
