@@ -39,7 +39,7 @@ class FlashcardsService:
 
         for pair in split:
             pair_split = pair.split(",")
-            flashcard = Flashcard(front=pair_split[0], back=pair_split[1])
+            flashcard = Flashcard(front=pair_split[1], back=pair_split[0])
             flashcards.append(flashcard)
 
         flashcards_payload = jsonable_encoder(flashcards or [])
@@ -51,3 +51,9 @@ class FlashcardsService:
     def update_flashcard(self, user_id: str, update_flashcard_write: UpdateFlashCard):
         self.repo.update_flashcard(user_id, update_flashcard_write.id, update_flashcard_write.set_id,
                                    update_flashcard_write.status)
+
+    def delete_set(self, set_id: str, user_id: str):
+        self.repo.delete_set(set_id, user_id)
+
+    def edit_set(self, user_id: str, set_to_edit: FlashCardSetRead):
+        self.repo.edit_set(user_id, set_to_edit)

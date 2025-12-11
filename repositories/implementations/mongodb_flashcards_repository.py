@@ -58,3 +58,9 @@ class MongoDbFlashcardsRepository(IFlashcardsRepository):
         )
 
         print("matched:", result.matched_count, "modified:", result.modified_count)
+
+    def delete_set(self, set_id: str, user_id: str):
+        self.collection.delete_one({'_id': ObjectId(set_id), 'user_id': user_id})
+
+    def edit_set(self, user_id: str, set_to_edit: FlashCardSet):
+        self.collection.update_one({'_id': ObjectId(set_to_edit.id), 'user_id': user_id}, {'$set': set_to_edit.model_dump(exclude_none=True)})

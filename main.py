@@ -7,8 +7,8 @@ from starlette.middleware.cors import CORSMiddleware
 from api.routes.user import router as user_router
 from api.routes.auth import router as auth_router
 from api.routes.language import router as language_router
+from api.routes.file import router as ai_router
 from db.mongodb_models import setup_indexes
-# from api.routes.flash_cards import router as flash_cards_router
 
 load_dotenv()
 IS_PROD = os.getenv("ENV") == "production"
@@ -17,6 +17,7 @@ app = FastAPI()
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(language_router)
+app.include_router(ai_router)
 # app.include_router(flash_cards_router)
 
 app.add_middleware(

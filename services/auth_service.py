@@ -5,7 +5,7 @@ from datetime import timedelta, timezone
 from dotenv import load_dotenv
 from fastapi import HTTPException, Depends
 from fastapi import Response
-from jose import jwt
+from jose import jwt, ExpiredSignatureError
 
 from core.repositories_dependencies import get_user_repository
 from db.db import db_dep
@@ -72,5 +72,7 @@ def get_auth_service(db: db_dep):
 def current_user_id(token: str = Depends(oauth2_bearer), auth_service: AuthService = Depends(get_auth_service)) -> str:
     try:
         return auth_service.get_current_user(token)
+    except ExpiredSignatureError as e:
+        raise HTTPException(status_code=401, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

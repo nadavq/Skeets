@@ -39,3 +39,13 @@ def create_set_from_text(user_id: user_dep, set_from_text_create: FlashCardsSetF
 @router.put("/flashcard/status")
 def update_flashcard_status(user_id: user_dep, update_flashcard: UpdateFlashCard, db: db_dep):
     LanguageService(db).update_flashcard_status(user_id, update_flashcard)
+
+
+@router.delete('/set/{set_id}')
+def delete_set(user_id: user_dep, set_id: str, db: db_dep):
+    LanguageService(db).delete_set(set_id, user_id)
+
+
+@router.put('/set')
+def edit_set(user_id: user_dep, db: db_dep, set_to_edit: FlashCardSetRead):
+    return LanguageService(db).edit_set(user_id, set_to_edit)

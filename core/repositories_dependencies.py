@@ -6,6 +6,7 @@ from repositories.flashcard_repository import IFlashcardsRepository
 from repositories.implementations.mongodb_flashcards_repository import MongoDbFlashcardsRepository
 from repositories.implementations.sqlalchemy_flashcards_repository import MySqlFlashcardsRepository
 
+
 class DbType(Enum):
     MYSQL = 1
     MONGODB = 2

@@ -5,7 +5,7 @@ from bson import ObjectId
 from pymongo.results import InsertOneResult
 
 from shared.schema.flashcards.enums import FlashcardStatus
-from shared.schema.flashcards.flashcards import Flashcard
+from shared.schema.flashcards.flashcards import Flashcard, FlashCardSetRead
 
 
 class IFlashcardsRepository:
@@ -30,4 +30,10 @@ class IFlashcardsRepository:
         pass
 
     def update_flashcard(self, user_id: str, flash_card_id: str, set_id: str, status: FlashcardStatus):
+        pass
+
+    def delete_set(self, set_id: str, user_id: str):
+        pass
+
+    def edit_set(self, user_id: str, set_to_edit: FlashCardSetRead):
         pass
