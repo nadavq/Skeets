@@ -6,13 +6,15 @@ from pymongo.results import InsertOneResult
 from core.repositories_dependencies import get_flashcards_repository
 from repositories.flashcard_repository import IFlashcardsRepository
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, Flashcard, FlashCardSet, \
-    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead
+    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead, FlashCardsSetFromWordsCreate
+from services.ai_service import AiService
 
 
 class FlashcardsService:
     def __init__(self, db):
         self.db = db
         self.repo: IFlashcardsRepository = get_flashcards_repository(db)
+        self.ai_service = AiService()
 
     def get_flashcards(self, user_id: str, set_id) -> List[FlashCardRead]:
         flash_cards = self.repo.get_user_flashcards(user_id, set_id)
@@ -57,3 +59,12 @@ class FlashcardsService:
 
     def edit_set(self, user_id: str, set_to_edit: FlashCardSetRead):
         self.repo.edit_set(user_id, set_to_edit)
+
+    def create_set_from_words(self, user_id: str, set_from_text_create: FlashCardsSetFromWordsCreate):
+        words_for_set = set_from_text_create.words
+        set_comma_separated = self.ai_service.translate_words(words_for_set)
+        new_set: FlashCardSetRead = self.create_set_from_text(user_id,
+                                                              FlashCardsSetFromTextCreate(
+                                                                  text=set_comma_separated,
+                                                                  set_name=set_from_text_create.set_name))
+        return new_set

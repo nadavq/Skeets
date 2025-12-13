@@ -1,7 +1,7 @@
 from typing import List
 from services.flashcards_service import FlashcardsService
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
-    FlashCardsSetFromTextCreate, FlashCardRead
+    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate
 
 
 class LanguageService:
@@ -22,8 +22,8 @@ class LanguageService:
     def get_sets(self, user_id: str) -> List[FlashCardSetRead]:
         return self.flashcards_service.get_sets(user_id)
 
-    def create_set_from_text(self, user_id: str, set_from_text_create: FlashCardsSetFromTextCreate):
-        return self.flashcards_service.create_set_from_text(user_id, set_from_text_create)
+    # def create_set_from_text(self, user_id: str, set_from_text_create: FlashCardsSetFromTextCreate):
+    #     return self.flashcards_service.create_set_from_text(user_id, set_from_text_create)
 
     def update_flashcard_status(self, user_id: str, update_flashcard: UpdateFlashCard):
         self.flashcards_service.update_flashcard(user_id, update_flashcard)
@@ -33,3 +33,6 @@ class LanguageService:
 
     def edit_set(self, user_id: str, set_to_edit: FlashCardSetRead):
         self.flashcards_service.edit_set(user_id, set_to_edit)
+
+    def create_set_from_words(self, user_id: str, set_from_words_create: FlashCardsSetFromWordsCreate):
+        return self.flashcards_service.create_set_from_words(user_id, set_from_words_create)

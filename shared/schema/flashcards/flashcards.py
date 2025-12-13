@@ -78,6 +78,11 @@ class FlashCardsSetFromTextCreate(BaseModel):
     set_name: str
 
 
+class FlashCardsSetFromWordsCreate(BaseModel):
+    words: str
+    set_name: str
+
+
 class UpdateFlashCard(BaseModel):
     id: str
     status: FlashcardStatus
