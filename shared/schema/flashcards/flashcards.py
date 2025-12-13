@@ -76,6 +76,7 @@ class FlashCardSetRead(BaseModel):
 class FlashCardsSetFromTextCreate(BaseModel):
     text: str
     set_name: str
+    separator: str = Field(default=",", min_length=1, max_length=1, description="Separator between words in text")
 
 
 class FlashCardsSetFromWordsCreate(BaseModel):

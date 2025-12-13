@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter
 
 from db.db import db_dep
+from services.flashcards_service import FlashcardsService
 from shared.common import user_dep
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
     FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate
@@ -33,7 +34,7 @@ def create_flashcard(user_id: user_dep, set_name: str, flashcard: FlashCardCreat
 
 @router.post("/create-set-from-text")
 def create_set_from_text(user_id: user_dep, set_from_text_create: FlashCardsSetFromTextCreate, db: db_dep):
-    return LanguageService(db).create_set_from_text(user_id, set_from_text_create)
+    return FlashcardsService(db).create_set_from_text(user_id, set_from_text_create)
 
 
 @router.post("/create-set-from-words")

@@ -40,7 +40,7 @@ class FlashcardsService:
         flashcards = []
 
         for pair in split:
-            pair_split = pair.split(",")
+            pair_split = pair.split(set_from_text_create.separator)
             flashcard = Flashcard(front=pair_split[1], back=pair_split[0])
             flashcards.append(flashcard)
 
