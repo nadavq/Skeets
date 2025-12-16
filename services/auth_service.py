@@ -22,7 +22,7 @@ IS_PROD = os.getenv("ENV") == "production"
 
 def create_access_token(user: User) -> JwtTokenRead:
     encode = {'sub': user.email, 'id': user.id}
-    expires = datetime.now(timezone.utc) + timedelta(minutes=30)
+    expires = datetime.now(timezone.utc) + timedelta(days=30)
     encode.update({'exp': expires})
     secret_key = os.environ.get("JWT_SECRET_KEY")
     token = jwt.encode(encode, secret_key, algorithm='HS256')
@@ -34,7 +34,7 @@ class AuthService:
         self.db = db
         self.users: IUserRepository = get_user_repository(db)
 
-    def authenticate_user(self, username: str, password: str, response: Response) -> JwtTokenRead:
+    def authenticate_user(self, username: str, password: str) -> JwtTokenRead:
         try:
             user = self.users.get_user_by_email(username)
             if user is None:
@@ -47,7 +47,7 @@ class AuthService:
         except AuthException as ae:
             raise HTTPException(status_code=401, detail=str(ae))
         except Exception as e:
-            raise HTTPException(status_code=404, detail=str(e))
+            raise HTTPException(status_code=500, detail=str(e))
 
     def get_current_user(self, token: str) -> str:
         secret_key = os.environ.get("JWT_SECRET_KEY")
