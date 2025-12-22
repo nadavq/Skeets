@@ -24,6 +24,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://skeets-front-kuuz.vercel.app",
+        "https://skeets-front-kuuz.vercel.app/",
         "http://localhost:5173",
         "https://7a01da7e9430.ngrok-free.app",
         "https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3--5173--365214aa.local-credentialless.webcontainer-api.io"
