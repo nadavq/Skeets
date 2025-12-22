@@ -8,8 +8,6 @@ from google import genai
 from openai import OpenAI
 from PIL import Image
 
-from services.FileService import FileService
-
 load_dotenv()
 
 
@@ -18,7 +16,6 @@ class AiService:
     def __init__(self, db):
         api_key = os.environ.get("GEMINI_API_KEY")
         self.client = genai.Client(api_key=api_key)
-        self.file_service = FileService(db)
 
     def create_set_from_image(self, image_url) -> str:
         instructions = """Extract the russian words from this image, and translate them to English. 

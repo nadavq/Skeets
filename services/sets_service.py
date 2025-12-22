@@ -76,3 +76,6 @@ class SetsService:
             raise Exception(f"Set with id {set_id} was not found.")
 
         return FlashCardSetRead(**set_from_db)
+
+    def create_set_from_image(self, image_url) -> str:
+        return self.ai_service.create_set_from_image(image_url)
