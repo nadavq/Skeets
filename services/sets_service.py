@@ -1,5 +1,6 @@
 from typing import List
 
+from bson import ObjectId
 from fastapi.encoders import jsonable_encoder
 from pymongo.results import InsertOneResult
 
@@ -10,11 +11,11 @@ from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate
 from services.ai_service import AiService
 
 
-class FlashcardsService:
+class SetsService:
     def __init__(self, db):
         self.db = db
         self.repo: IFlashcardsRepository = get_flashcards_repository(db)
-        self.ai_service = AiService()
+        self.ai_service = AiService(db)
 
     def get_flashcards(self, user_id: str, set_id) -> List[FlashCardRead]:
         flash_cards = self.repo.get_user_flashcards(user_id, set_id)
@@ -68,3 +69,10 @@ class FlashcardsService:
                                                                   text=set_comma_separated,
                                                                   set_name=set_from_text_create.set_name))
         return new_set
+
+    def get_set(self, user_id: str, set_id: str):
+        set_from_db = self.repo.get_set(ObjectId(set_id))
+        if not set_from_db:
+            raise Exception(f"Set with id {set_id} was not found.")
+
+        return FlashCardSetRead(**set_from_db)

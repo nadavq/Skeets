@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter
 
 from db.db import db_dep
-from services.flashcards_service import FlashcardsService
+from services.sets_service import SetsService
 from shared.common import user_dep
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
     FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate
@@ -34,7 +34,7 @@ def create_flashcard(user_id: user_dep, set_name: str, flashcard: FlashCardCreat
 
 @router.post("/create-set-from-text")
 def create_set_from_text(user_id: user_dep, set_from_text_create: FlashCardsSetFromTextCreate, db: db_dep):
-    return FlashcardsService(db).create_set_from_text(user_id, set_from_text_create)
+    return SetsService(db).create_set_from_text(user_id, set_from_text_create)
 
 
 @router.post("/create-set-from-words")
@@ -45,6 +45,11 @@ def create_set_from_words(user_id: user_dep, set_from_words_create: FlashCardsSe
 @router.put("/flashcard/status")
 def update_flashcard_status(user_id: user_dep, update_flashcard: UpdateFlashCard, db: db_dep):
     LanguageService(db).update_flashcard_status(user_id, update_flashcard)
+
+
+@router.get('/set/{set_id}')
+def delete_set(user_id: user_dep, set_id: str, db: db_dep):
+    SetsService(db).get_set(set_id, user_id)
 
 
 @router.delete('/set/{set_id}')

@@ -3,7 +3,7 @@ import base64
 from repositories.file_repository import FileRepository
 from schema.file import FileDataCreate, FileDataRead, SetFromImageCreate, FileData
 from services.ai_service import AiService
-from services.flashcards_service import FlashcardsService
+from services.sets_service import SetsService
 from services.language_service import LanguageService
 from shared.schema.flashcards.flashcards import FlashCardsSetFromTextCreate, FlashCardSetRead
 
@@ -12,10 +12,10 @@ class FileService:
 
     def __init__(self, db):
         self.db = db
-        self.ai_service = AiService()
+        self.ai_service = AiService(db)
         self.language_service = LanguageService(db)
         self.file_repo = FileRepository(db)
-        self.flashcards_service = FlashcardsService(db)
+        self.flashcards_service = SetsService(db)
 
     def create_set_from_file(self, user_id, set_from_image_create: SetFromImageCreate):
         file_id = set_from_image_create.file_id
