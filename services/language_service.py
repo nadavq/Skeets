@@ -1,7 +1,10 @@
+import base64
 from typing import List
+from services.FileService import FileService
+from services.ai_service import AiService
 from services.sets_service import SetsService
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
-    FlashCardRead, FlashCardsSetFromWordsCreate
+    FlashCardRead, FlashCardsSetFromWordsCreate, FlashCardsSetFromTextCreate, AssetRead
 
 
 class LanguageService:
@@ -9,6 +12,8 @@ class LanguageService:
     def __init__(self, db):
         self.db = db
         self.sets_service = SetsService(db)
+        self.ai_service = AiService(db)
+        self.file_service = FileService(db)
 
     def get_flashcards(self, user_id: str, set_id: str) -> List[FlashCardRead]:
         return self.sets_service.get_flashcards(user_id, set_id)
@@ -37,3 +42,26 @@ class LanguageService:
     def create_set_from_words(self, user_id: str, set_from_words_create: FlashCardsSetFromWordsCreate):
         return self.sets_service.create_set_from_words(user_id, set_from_words_create)
 
+    def create_asset_set_from_text(self, user_id: str, set_from_text_create: FlashCardsSetFromTextCreate):
+        words_in_set = set_from_text_create.text.split('\n')
+        for word_pair in words_in_set:
+            word_pair_split = word_pair.split(set_from_text_create.separator)
+            word_in_russian = word_pair_split[0]
+            word_in_english = word_pair_split[1]
+            asset = self.ai_service.create_asset_from_word(word_in_english)
+
+            if asset is not None:
+                self.file_service.save_asset_to_db(asset, word_in_english, word_in_russian)
+
+        return self.sets_service.create_set_from_text(user_id, set_from_text_create)
+
+    def get_assets(self, user_id: str, set_id: str):
+        flashcards: List[FlashCardRead] = self.sets_service.get_flashcards(user_id, set_id)
+        keywords = list(map(lambda f: f.front, flashcards))
+        assets_from_db = self.file_service.get_assets_by_keywords(keywords)
+        assets = []
+
+        for asset in assets_from_db:
+            assets.append(AssetRead(word_in_english=asset['asset_name_english'], word_in_russian=asset['asset_name_russian'], asset=base64.b64encode(asset["asset_in_bytes"]).decode("utf-8")))
+
+        return assets

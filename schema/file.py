@@ -22,6 +22,12 @@ class FileDataCreate(BaseModel):
     data_url: str
 
 
+class AssetDataCreate(BaseModel):
+    asset_in_bytes: bytes
+    asset_name_english: str
+    asset_name_russian: str
+
+
 class FileDataRead(BaseModel):
     id: str = Field(..., alias="_id")
     user_id: str

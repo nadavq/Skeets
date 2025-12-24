@@ -21,4 +21,4 @@ def create_set_from_file(user_id: user_dep, db: db_dep, file_data: SetFromImageC
 
 @router.post("/test")
 def test(db: db_dep, user_id: user_dep):
-    AiService(db).a('wake up')
+    FileService(db).create_asset_from_word('wake up')

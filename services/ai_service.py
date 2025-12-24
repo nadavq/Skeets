@@ -1,8 +1,5 @@
-import io
 import os
 from pathlib import Path
-
-from bson import Binary
 from dotenv import load_dotenv
 from google import genai
 from openai import OpenAI
@@ -77,9 +74,10 @@ class AiService:
 
         return response.output_text
 
-    def a(self, word_for_img):
+    def create_asset_from_word(self, word_for_img) -> bytes | None:
         prompt = (
-            f"Create a picture of that will describe best the following word/phrase - {word_for_img}, with a transparent background."
+            f"Create an image that best represents the following word or phrase: "
+            f"{word_for_img}. The image must have a transparent background."
         )
 
         # 1. Get the directory where THIS script is located
@@ -103,7 +101,6 @@ class AiService:
                 print(part.text)
             elif part.inline_data is not None:
                 image = part.as_image()
-                image_bytes_io = io.BytesIO()
-                image_binary = Binary(image_bytes_io.getvalue())
+                return image.image_bytes
 
-                # self.file_service.save_file_to_db()
+        return None

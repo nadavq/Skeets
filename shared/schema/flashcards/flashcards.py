@@ -88,3 +88,9 @@ class UpdateFlashCard(BaseModel):
     id: str
     status: FlashcardStatus
     set_id: str
+
+
+class AssetRead(BaseModel):
+    word_in_english: str
+    word_in_russian: str
+    asset: str

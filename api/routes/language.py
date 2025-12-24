@@ -60,3 +60,13 @@ def delete_set(user_id: user_dep, set_id: str, db: db_dep):
 @router.put('/set')
 def edit_set(user_id: user_dep, db: db_dep, set_to_edit: FlashCardSetRead):
     return LanguageService(db).edit_set(user_id, set_to_edit)
+
+
+@router.post('/asset-set-from-text')
+def create_asset_set_from_text(user_id: user_dep, db: db_dep, set_from_text_create: FlashCardsSetFromTextCreate):
+    return LanguageService(db).create_asset_set_from_text(user_id, set_from_text_create)
+
+
+@router.get('/assets/{set_id}')
+def get_assets(user_id: user_dep, db: db_dep, set_id: str):
+    return LanguageService(db).get_assets(user_id, set_id)
