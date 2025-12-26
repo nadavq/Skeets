@@ -5,6 +5,11 @@ from google import genai
 from openai import OpenAI
 from PIL import Image
 
+# local_path = "models/SmolLM3-3B"
+#
+# tokenizer = AutoTokenizer.from_pretrained(local_path, local_files_only=True)
+# model = AutoModelForCausalLM.from_pretrained(local_path, local_files_only=True)
+
 load_dotenv()
 
 
@@ -57,16 +62,19 @@ class AiService:
                 
                 Return only the response itself and no other words.
                """
+        return self.make_request_to_gpt(instructions, words_comma_separated)
+
+    def make_request_to_gpt(self, instructions: str, request_content: str, model: str = "gpt-5-nano") -> str:
         api_key = os.environ.get('OPENAI_API_KEY')
         client = OpenAI(api_key=api_key)
         response = client.responses.create(
-            model="gpt-5-nano",
+            model=model,
             input=[
                 {
                     "role": "user",
                     "content": [
                         {"type": "input_text", "text": instructions},
-                        {"type": "input_text", "text": words_comma_separated},
+                        {"type": "input_text", "text": request_content},
                     ],
                 }
             ],
@@ -104,3 +112,44 @@ class AiService:
                 return image.image_bytes
 
         return None
+
+    def generate_sentences(self, words: list[str]) -> list[str]:
+        instructions = """
+            Generate 8 sentences with the given words below. Each word should appear at least on time across the sentences.
+            Make them simple, short (a few words) and return the output in this format - 
+            sentence - translation to English{new_line}
+            sentence - translation to English{new_line}
+            ...
+            
+            The sentences must make sense, each one individually. 
+            You may change the form of the words, use them in a different tense, and remove special characters, in order for the sentence to make sense.
+            Return only the output and nothing else.
+            The given words are - 
+        """
+
+        sentences = self.make_request_to_gpt(instructions, str(words), model="gpt-5-mini")
+        sentences_split = sentences.split("\n")
+        return sentences_split
+
+    # def generate_sentence(self, words: list[str]) -> str:
+    #     prompt = (
+    #         "Write one complete, short, natural-sounding English sentence as written by a native speaker.\n"
+    #         "You may add extra words if needed.\n"
+    #         "Use each of the following words exactly once.\n"
+    #         f"Words: {', '.join(words)}\n\n"
+    #         "Sentence:*"
+    #     )
+    #
+    #     inputs = tokenizer(prompt, return_tensors="pt")
+    #
+    #     outputs = model.generate(
+    #         **inputs,
+    #         max_new_tokens=40,
+    #         temperature=0.7,
+    #         do_sample=True,
+    #         pad_token_id=tokenizer.eos_token_id
+    #     )
+    #
+    #     decoded: str = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    #     output = decoded.split("*")[1]
+    #     return outputs

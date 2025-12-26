@@ -14,7 +14,7 @@ class IFlashcardsRepository:
         self.collection = db["flashcards_sets"]
 
     @abstractmethod
-    def get_user_flashcards(self, user_id: str, set_id: str):
+    def get_user_flashcards(self, user_id: str, set_id: str, is_sentences_game):
         pass
 
     def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[Flashcard]):
@@ -36,4 +36,7 @@ class IFlashcardsRepository:
         pass
 
     def edit_set(self, user_id: str, set_to_edit: FlashCardSetRead):
+        pass
+
+    def add_flashcards(self, set_id, new_flashcards: List[Flashcard]):
         pass

@@ -6,19 +6,20 @@ from pymongo.results import UpdateResult, InsertOneResult
 
 from repositories.flashcard_repository import IFlashcardsRepository
 from shared.schema.flashcards.enums import FlashcardStatus
-from shared.schema.flashcards.flashcards import Flashcard, FlashCardSet
+from shared.schema.flashcards.flashcards import Flashcard, FlashCardSet, SentenceInSet
 
 
 class MongoDbFlashcardsRepository(IFlashcardsRepository):
 
-    def get_user_flashcards(self, user_id: str, set_id: str) -> List[Flashcard]:
+    def get_user_flashcards(self, user_id: str, set_id: str, is_sentences_game) -> List[Flashcard]:
         cursor = self.collection.find({'user_id': user_id, '_id': ObjectId(set_id)})
         res = []
         for doc in cursor:
             if 'flashcards' in doc:
                 flashcards = doc['flashcards']
                 for f in flashcards:
-                    res.append(Flashcard.model_validate(f))
+                    if (is_sentences_game and "is_sentence" in f and f['is_sentence']) or (not is_sentences_game and ("is_sentence" not in f or not f['is_sentence'])):
+                        res.append(Flashcard.model_validate(f))
         return res
 
     def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[Flashcard]) -> UpdateResult:
@@ -64,3 +65,15 @@ class MongoDbFlashcardsRepository(IFlashcardsRepository):
 
     def edit_set(self, user_id: str, set_to_edit: FlashCardSet):
         self.collection.update_one({'_id': ObjectId(set_to_edit.id), 'user_id': user_id}, {'$set': set_to_edit.model_dump(exclude_none=True)})
+
+    def add_flashcards(self, set_id, new_flashcards: List[Flashcard]):
+        self.collection.update_one(
+            {'_id': ObjectId(set_id)},
+            {
+                '$push': {
+                    'flashcards': {
+                        '$each': [f.model_dump() for f in new_flashcards]
+                    }
+                }
+            }
+        )

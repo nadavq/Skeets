@@ -7,7 +7,7 @@ from pymongo.results import InsertOneResult
 from core.repositories_dependencies import get_flashcards_repository
 from repositories.flashcard_repository import IFlashcardsRepository
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, Flashcard, FlashCardSet, \
-    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead, FlashCardsSetFromWordsCreate
+    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead, FlashCardsSetFromWordsCreate, SentenceInSet
 from services.ai_service import AiService
 
 
@@ -17,8 +17,8 @@ class SetsService:
         self.repo: IFlashcardsRepository = get_flashcards_repository(db)
         self.ai_service = AiService(db)
 
-    def get_flashcards(self, user_id: str, set_id) -> List[FlashCardRead]:
-        flash_cards = self.repo.get_user_flashcards(user_id, set_id)
+    def get_flashcards(self, user_id: str, set_id, is_sentences_game) -> List[FlashCardRead]:
+        flash_cards = self.repo.get_user_flashcards(user_id, set_id, is_sentences_game)
         return list(map(lambda card: FlashCardRead.model_validate(card), flash_cards))
 
     def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[FlashCardCreate]):
@@ -79,3 +79,9 @@ class SetsService:
 
     def create_set_from_image(self, image_url) -> str:
         return self.ai_service.create_set_from_image(image_url)
+
+    def save_sentences(self, user_id: str, set_id: str, sentences_to_persist: List[SentenceInSet]):
+        flashcards_to_persist = [Flashcard(front=sentence["sentence_in_english"], back=sentence["sentence_in_russian"], is_sentence=True)
+             for sentence in sentences_to_persist]
+        self.repo.add_flashcards(set_id, flashcards_to_persist)
+        pass

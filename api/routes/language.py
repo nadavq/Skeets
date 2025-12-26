@@ -8,13 +8,14 @@ from shared.common import user_dep
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
     FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate
 from services.language_service import LanguageService
+from shared.utils.type_utils import to_bool
 
 router = APIRouter(prefix="/language", tags=["Language"])
 
 
-@router.get("/flashcards/{set_id}", response_model=List[FlashCardRead], response_model_by_alias=False)
-def get_flashcards(user_id: user_dep, set_id: str, db: db_dep):
-    return LanguageService(db).get_flashcards(user_id, set_id)
+@router.get("/flashcards/{set_id}/{is_sentences_game}", response_model=List[FlashCardRead], response_model_by_alias=False)
+def get_flashcards(user_id: user_dep, set_id: str, db: db_dep, is_sentences_game: bool):
+    return LanguageService(db).get_flashcards(user_id, set_id, to_bool(is_sentences_game))
 
 
 @router.post("/new-set/{name}")
@@ -70,3 +71,8 @@ def create_asset_set_from_text(user_id: user_dep, db: db_dep, set_from_text_crea
 @router.get('/assets/{set_id}')
 def get_assets(user_id: user_dep, db: db_dep, set_id: str):
     return LanguageService(db).get_assets(user_id, set_id)
+
+
+@router.post('/generate-sentence/{set_id}')
+def generate_sentences_from_set(user_id: user_dep, set_id, db: db_dep):
+    return LanguageService(db).generate_sentences_from_set(user_id, set_id)

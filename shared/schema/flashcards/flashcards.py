@@ -14,6 +14,7 @@ class Flashcard(BaseModel):
     status: FlashcardStatus = Field(default=FlashcardStatus.StillLearning)
     num_of_remembers: int = Field(default=0)
     num_of_learning: int = Field(default=0)
+    is_sentence: bool = Field(default=False)
 
     model_config = {
         "populate_by_name": True
@@ -94,3 +95,8 @@ class AssetRead(BaseModel):
     word_in_english: str
     word_in_russian: str
     asset: str
+
+
+class SentenceInSet(BaseModel):
+    sentence_in_english: str
+    sentence_in_russian: str

@@ -4,7 +4,7 @@ from services.FileService import FileService
 from services.ai_service import AiService
 from services.sets_service import SetsService
 from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
-    FlashCardRead, FlashCardsSetFromWordsCreate, FlashCardsSetFromTextCreate, AssetRead
+    FlashCardRead, FlashCardsSetFromWordsCreate, FlashCardsSetFromTextCreate, AssetRead, SentenceInSet
 
 
 class LanguageService:
@@ -15,8 +15,8 @@ class LanguageService:
         self.ai_service = AiService(db)
         self.file_service = FileService(db)
 
-    def get_flashcards(self, user_id: str, set_id: str) -> List[FlashCardRead]:
-        return self.sets_service.get_flashcards(user_id, set_id)
+    def get_flashcards(self, user_id: str, set_id: str, is_sentences_game) -> List[FlashCardRead]:
+        return self.sets_service.get_flashcards(user_id, set_id, is_sentences_game)
 
     def create_flashcards(self, user_id: str, set_name: str, flashcards: List[FlashCardCreate]):
         return self.sets_service.create_flashcards(user_id, set_name, flashcards)
@@ -26,9 +26,6 @@ class LanguageService:
 
     def get_sets(self, user_id: str) -> List[FlashCardSetRead]:
         return self.sets_service.get_sets(user_id)
-
-    # def create_set_from_text(self, user_id: str, set_from_text_create: FlashCardsSetFromTextCreate):
-    #     return self.flashcards_service.create_set_from_text(user_id, set_from_text_create)
 
     def update_flashcard_status(self, user_id: str, update_flashcard: UpdateFlashCard):
         self.sets_service.update_flashcard(user_id, update_flashcard)
@@ -56,7 +53,7 @@ class LanguageService:
         return self.sets_service.create_set_from_text(user_id, set_from_text_create)
 
     def get_assets(self, user_id: str, set_id: str):
-        flashcards: List[FlashCardRead] = self.sets_service.get_flashcards(user_id, set_id)
+        flashcards: List[FlashCardRead] = self.sets_service.get_flashcards(user_id, set_id, False)
         keywords = list(map(lambda f: f.front, flashcards))
         assets_from_db = self.file_service.get_assets_by_keywords(keywords)
         assets = []
@@ -65,3 +62,18 @@ class LanguageService:
             assets.append(AssetRead(word_in_english=asset['asset_name_english'], word_in_russian=asset['asset_name_russian'], asset=base64.b64encode(asset["asset_in_bytes"]).decode("utf-8")))
 
         return assets
+
+    def generate_sentences_from_set(self, user_id: str, set_id: str) -> List[SentenceInSet]:
+        set_from_db = self.sets_service.get_set(user_id, set_id)
+        words = list(map(lambda f: f.back, set_from_db.flashcards))
+        sentences = self.ai_service.generate_sentences(words)
+
+        sentences_to_persist = []
+        for sentence in sentences:
+            sentence_and_translation = sentence.split(" - ")
+            sentence_in_russian = sentence_and_translation[0]
+            sentence_in_english = sentence_and_translation[1]
+            sentences_to_persist.append(SentenceInSet(sentence_in_english=sentence_in_english, sentence_in_russian=sentence_in_russian))
+
+        self.sets_service.save_sentences(user_id, set_id, sentences_to_persist)
+        return sentences_to_persist
