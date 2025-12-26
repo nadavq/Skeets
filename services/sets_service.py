@@ -41,6 +41,9 @@ class SetsService:
         flashcards = []
 
         for pair in split:
+            if not pair:
+                continue
+
             pair_split = pair.split(set_from_text_create.separator)
             flashcard = Flashcard(front=pair_split[1], back=pair_split[0])
             flashcards.append(flashcard)
