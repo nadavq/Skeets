@@ -84,7 +84,7 @@ class SetsService:
         return self.ai_service.create_set_from_image(image_url)
 
     def save_sentences(self, user_id: str, set_id: str, sentences_to_persist: List[SentenceInSet]):
-        flashcards_to_persist = [Flashcard(front=sentence["sentence_in_english"], back=sentence["sentence_in_russian"], is_sentence=True)
+        flashcards_to_persist = [Flashcard(front=sentence.sentence_in_english, back=sentence.sentence_in_russian, is_sentence=True)
              for sentence in sentences_to_persist]
         self.repo.add_flashcards(set_id, flashcards_to_persist)
         pass
