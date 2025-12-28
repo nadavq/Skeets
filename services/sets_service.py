@@ -88,3 +88,6 @@ class SetsService:
              for sentence in sentences_to_persist]
         self.repo.add_flashcards(set_id, flashcards_to_persist)
         pass
+
+    def delete_card(self, set_id: str, card_id: str):
+        self.repo.delete_card(set_id, card_id)

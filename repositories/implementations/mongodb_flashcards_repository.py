@@ -77,3 +77,9 @@ class MongoDbFlashcardsRepository(IFlashcardsRepository):
                 }
             }
         )
+
+    def delete_card(self, set_id: str, card_id: str):
+        self.collection.update_one(
+            {'_id': ObjectId(set_id)},
+            {'$pull': {'flashcards': {'_id': card_id}}}
+        )

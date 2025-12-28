@@ -40,3 +40,6 @@ class IFlashcardsRepository:
 
     def add_flashcards(self, set_id, new_flashcards: List[Flashcard]):
         pass
+
+    def delete_card(self, set_id: str, card_id: str):
+        pass

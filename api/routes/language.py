@@ -76,3 +76,7 @@ def get_assets(user_id: user_dep, db: db_dep, set_id: str):
 @router.post('/generate-sentence/{set_id}')
 def generate_sentences_from_set(user_id: user_dep, set_id, db: db_dep):
     return LanguageService(db).generate_sentences_from_set(user_id, set_id)
+
+@router.delete('/card/{set_id}/{card_id}')
+def delete_card(user_id: user_dep, set_id: str, card_id: str, db: db_dep):
+    return LanguageService(db).delete_card(set_id, card_id)

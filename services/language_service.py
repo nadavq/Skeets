@@ -77,3 +77,6 @@ class LanguageService:
 
         self.sets_service.save_sentences(user_id, set_id, sentences_to_persist)
         return sentences_to_persist
+
+    def delete_card(self, set_id: str, card_id: str):
+        self.sets_service.delete_card(set_id, card_id)
