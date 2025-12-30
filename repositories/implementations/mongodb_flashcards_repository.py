@@ -22,12 +22,12 @@ class MongoDbFlashcardsRepository(IFlashcardsRepository):
                         res.append(Flashcard.model_validate(f))
         return res
 
-    def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[Flashcard]) -> UpdateResult:
+    def create_flashcards(self, user_id: str, set_id: str, new_flashcards: List[Flashcard]) -> UpdateResult:
         flashcards_payload = jsonable_encoder(new_flashcards)
 
         return self.collection.update_one(
-            {'name': set_name, 'user_id': user_id},
-            {'$set': {'flashcards': flashcards_payload}},
+            {'_id': ObjectId(set_id), 'user_id': user_id},
+          {'$push': {'flashcards': {'$each': flashcards_payload}}},
             upsert=True
         )
 

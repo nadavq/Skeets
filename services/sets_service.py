@@ -21,11 +21,11 @@ class SetsService:
         flash_cards = self.repo.get_user_flashcards(user_id, set_id, is_sentences_game)
         return list(map(lambda card: FlashCardRead.model_validate(card), flash_cards))
 
-    def create_flashcards(self, user_id: str, set_name: str, new_flashcards: List[FlashCardCreate]):
+    def create_flashcards(self, user_id: str, set_id: str, new_flashcards: List[FlashCardCreate]):
         flashcards: List[Flashcard] = []
         for f in new_flashcards:
             flashcards.append(Flashcard(front=f.front, back=f.back))
-        flashcards = self.repo.create_flashcards(user_id, set_name, flashcards)
+        flashcards = self.repo.create_flashcards(user_id, set_id, flashcards)
         return flashcards
 
     def create_new_set(self, name: str, user_id: str) -> FlashCardSet:

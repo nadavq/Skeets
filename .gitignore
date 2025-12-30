@@ -8,3 +8,8 @@ out
 gen
 !/.env
 .env
+__pycache__/
+*.py[cod]
+*$py.class
+# ML models / caches
+models/

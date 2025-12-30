@@ -18,8 +18,8 @@ class LanguageService:
     def get_flashcards(self, user_id: str, set_id: str, is_sentences_game) -> List[FlashCardRead]:
         return self.sets_service.get_flashcards(user_id, set_id, is_sentences_game)
 
-    def create_flashcards(self, user_id: str, set_name: str, flashcards: List[FlashCardCreate]):
-        return self.sets_service.create_flashcards(user_id, set_name, flashcards)
+    def create_flashcards(self, user_id: str, set_id: str, flashcards: List[FlashCardCreate]):
+        return self.sets_service.create_flashcards(user_id, set_id, flashcards)
 
     def create_new_set(self, user_id: str, name: str):
         return self.sets_service.create_new_set(name, user_id)

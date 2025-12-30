@@ -28,9 +28,9 @@ def get_sets(user_id: user_dep, db: db_dep):
     return LanguageService(db).get_sets(user_id)
 
 
-@router.post("/flashcard/{set_name}")
-def create_flashcard(user_id: user_dep, set_name: str, flashcard: FlashCardCreate, db: db_dep):
-    return LanguageService(db).create_flashcards(user_id, set_name, [flashcard])
+@router.post("/flashcard/{set_id}")
+def create_flashcard(user_id: user_dep, set_id: str, flashcard: FlashCardCreate, db: db_dep):
+    LanguageService(db).create_flashcards(user_id, set_id, [flashcard])
 
 
 @router.post("/create-set-from-text")
