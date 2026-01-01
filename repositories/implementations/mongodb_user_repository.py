@@ -1,7 +1,7 @@
 from bson import ObjectId
 from pymongo.results import InsertOneResult
 
-from shared.utils.copy_utils import merge
+from utils.copy_utils import merge
 from model.user import User
 from repositories.user_repository import IUserRepository
 

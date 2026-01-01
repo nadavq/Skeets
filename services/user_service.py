@@ -2,7 +2,7 @@ import datetime
 
 from fastapi import HTTPException
 
-from shared.security import pwd_context
+from core.security import pwd_context
 from core.repositories_dependencies import get_user_repository, DbType, curr_db_type
 from model.user import User
 from repositories.user_repository import IUserRepository

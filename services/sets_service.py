@@ -6,7 +6,7 @@ from pymongo.results import InsertOneResult
 
 from core.repositories_dependencies import get_flashcards_repository
 from repositories.flashcard_repository import IFlashcardsRepository
-from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, Flashcard, FlashCardSet, \
+from schema.flashcards import UpdateFlashCard, FlashCardCreate, Flashcard, FlashCardSet, \
     FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead, FlashCardsSetFromWordsCreate, SentenceInSet
 from services.ai_service import AiService
 

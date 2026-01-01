@@ -4,14 +4,13 @@ from datetime import datetime
 from datetime import timedelta, timezone
 from dotenv import load_dotenv
 from fastapi import HTTPException, Depends
-from fastapi import Response
 from jose import jwt, ExpiredSignatureError
 
 from core.repositories_dependencies import get_user_repository
 from db.db import db_dep
 from exceptions.AuthException import AuthException
 from model.user import User
-from shared.security import pwd_context
+from core.security import pwd_context
 from repositories.implementations.mysql_user_repository import IUserRepository
 from schema.auth import JwtTokenRead
 from security import oauth2_bearer

@@ -2,9 +2,8 @@ from fastapi import APIRouter, File, UploadFile
 
 from db.db import db_dep
 from schema.file import FileDataRead, SetFromImageCreate
-from services.FileService import FileService
-from services.ai_service import AiService
-from shared.common import user_dep
+from services.file_service import FileService
+from core.common import user_dep
 
 router = APIRouter(prefix="/file", tags=["File"])
 

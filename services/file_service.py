@@ -3,7 +3,7 @@ from typing import List
 from repositories.file_repository import FileRepository
 from schema.file import FileDataCreate, FileDataRead, SetFromImageCreate, FileData, AssetDataCreate
 from services.sets_service import SetsService
-from shared.schema.flashcards.flashcards import FlashCardsSetFromTextCreate, FlashCardSetRead
+from schema.flashcards import FlashCardsSetFromTextCreate, FlashCardSetRead
 
 
 class FileService:

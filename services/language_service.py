@@ -1,9 +1,9 @@
 import base64
 from typing import List
-from services.FileService import FileService
+from services.file_service import FileService
 from services.ai_service import AiService
 from services.sets_service import SetsService
-from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
+from schema.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
     FlashCardRead, FlashCardsSetFromWordsCreate, FlashCardsSetFromTextCreate, AssetRead, SentenceInSet
 
 

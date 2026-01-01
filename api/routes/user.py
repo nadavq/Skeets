@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from shared.common import user_dep
+from core.common import user_dep
 from db.db import db_dep
 from schema.user import UserCreate, UserRead
 from services.user_service import UserService

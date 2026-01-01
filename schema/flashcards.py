@@ -3,8 +3,8 @@ from typing import List
 from bson import ObjectId
 from pydantic import BaseModel, Field, field_validator
 
-from shared.schema.flashcards.enums import FlashcardStatus
-from shared.utils.copy_utils import convert_object_id_to_str
+from schema.enums import FlashcardStatus
+from utils.copy_utils import convert_object_id_to_str
 
 
 class Flashcard(BaseModel):

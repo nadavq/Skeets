@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from api.routes.user import router as user_router
+from api.routes.words_explained import router as words_explained_router
 from api.routes.auth import router as auth_router
 from api.routes.language import router as language_router
 from api.routes.file import router as ai_router
@@ -18,7 +19,7 @@ app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(language_router)
 app.include_router(ai_router)
-# app.include_router(flash_cards_router)
+app.include_router(words_explained_router)
 
 app.add_middleware(
     CORSMiddleware,

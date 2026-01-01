@@ -5,8 +5,8 @@ from fastapi.encoders import jsonable_encoder
 from pymongo.results import UpdateResult, InsertOneResult
 
 from repositories.flashcard_repository import IFlashcardsRepository
-from shared.schema.flashcards.enums import FlashcardStatus
-from shared.schema.flashcards.flashcards import Flashcard, FlashCardSet, SentenceInSet
+from schema.enums import FlashcardStatus
+from schema.flashcards import Flashcard, FlashCardSet
 
 
 class MongoDbFlashcardsRepository(IFlashcardsRepository):

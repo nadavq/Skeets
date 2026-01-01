@@ -4,8 +4,8 @@ from typing import List
 from bson import ObjectId
 from pymongo.results import InsertOneResult
 
-from shared.schema.flashcards.enums import FlashcardStatus
-from shared.schema.flashcards.flashcards import Flashcard, FlashCardSetRead
+from schema.enums import FlashcardStatus
+from schema.flashcards import Flashcard, FlashCardSetRead
 
 
 class IFlashcardsRepository:

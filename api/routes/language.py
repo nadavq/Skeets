@@ -4,11 +4,11 @@ from fastapi import APIRouter
 
 from db.db import db_dep
 from services.sets_service import SetsService
-from shared.common import user_dep
-from shared.schema.flashcards.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
+from core.common import user_dep
+from schema.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
     FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate
 from services.language_service import LanguageService
-from shared.utils.type_utils import to_bool
+from utils.type_utils import to_bool
 
 router = APIRouter(prefix="/language", tags=["Language"])
 

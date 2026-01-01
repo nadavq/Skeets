@@ -153,3 +153,13 @@ class AiService:
     #     decoded: str = tokenizer.decode(outputs[0], skip_special_tokens=True)
     #     output = decoded.split("*")[1]
     #     return outputs
+
+    def generate_word_description(self, word_name: str):
+        instructions = """
+        Explain the following Russian word, it's usages and context in summary.
+        Explain it in English.
+        Return the response as markdown text that is UI friendly:
+        """
+
+        return self.make_request_to_gpt(instructions, word_name)
+

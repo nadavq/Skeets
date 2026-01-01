@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 
-from shared.utils.copy_utils import convert_object_id_to_str
+from utils.copy_utils import convert_object_id_to_str
 
 
 class FileData(BaseModel):
