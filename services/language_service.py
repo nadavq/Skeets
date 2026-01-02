@@ -24,8 +24,8 @@ class LanguageService:
     def create_new_set(self, user_id: str, name: str):
         return self.sets_service.create_new_set(name, user_id)
 
-    def get_sets(self, user_id: str, page_number: int, page_size: int) -> List[FlashCardSetRead]:
-        sets = self.sets_service.get_sets(user_id, page_number, page_size)
+    def get_sets(self, user_id: str) -> List[FlashCardSetRead]:
+        sets = self.sets_service.get_sets(user_id)
         sets.sort(key=lambda set: set.id, reverse=True)
         return sets
 
