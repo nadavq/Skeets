@@ -4,7 +4,7 @@ from services.file_service import FileService
 from services.ai_service import AiService
 from services.sets_service import SetsService
 from schema.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
-    FlashCardRead, FlashCardsSetFromWordsCreate, FlashCardsSetFromTextCreate, AssetRead, SentenceInSet
+    FlashCardRead, FlashCardsSetFromWordsCreate, FlashCardsSetFromTextCreate, AssetRead, SentenceInSet, AddTextToSet
 
 
 class LanguageService:
@@ -24,8 +24,10 @@ class LanguageService:
     def create_new_set(self, user_id: str, name: str):
         return self.sets_service.create_new_set(name, user_id)
 
-    def get_sets(self, user_id: str) -> List[FlashCardSetRead]:
-        return self.sets_service.get_sets(user_id)
+    def get_sets(self, user_id: str, page_number: int, page_size: int) -> List[FlashCardSetRead]:
+        sets = self.sets_service.get_sets(user_id, page_number, page_size)
+        sets.sort(key=lambda set: set.id, reverse=True)
+        return sets
 
     def update_flashcard_status(self, user_id: str, update_flashcard: UpdateFlashCard):
         self.sets_service.update_flashcard(user_id, update_flashcard)
@@ -80,3 +82,6 @@ class LanguageService:
 
     def delete_card(self, set_id: str, card_id: str):
         self.sets_service.delete_card(set_id, card_id)
+
+    def add_text_to_set(self, user_id: str, add_text_to_set: AddTextToSet):
+        self.sets_service.add_text_to_set(user_id, add_text_to_set)

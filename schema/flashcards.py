@@ -100,3 +100,9 @@ class AssetRead(BaseModel):
 class SentenceInSet(BaseModel):
     sentence_in_english: str
     sentence_in_russian: str
+
+
+class AddTextToSet(BaseModel):
+    set_id: str
+    text: str
+    separator: str = Field(default=",", min_length=1, max_length=1, description="Separator between words in text")

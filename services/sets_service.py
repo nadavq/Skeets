@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 from bson import ObjectId
 from fastapi.encoders import jsonable_encoder
@@ -7,7 +7,8 @@ from pymongo.results import InsertOneResult
 from core.repositories_dependencies import get_flashcards_repository
 from repositories.flashcard_repository import IFlashcardsRepository
 from schema.flashcards import UpdateFlashCard, FlashCardCreate, Flashcard, FlashCardSet, \
-    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead, FlashCardsSetFromWordsCreate, SentenceInSet
+    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardSetRead, FlashCardsSetFromWordsCreate, SentenceInSet, \
+    AddTextToSet
 from services.ai_service import AiService
 
 
@@ -37,22 +38,26 @@ class SetsService:
         return list(map(lambda fl_set: FlashCardSetRead.model_validate(fl_set), sets))
 
     def create_set_from_text(self, user_id: str, set_from_text_create: FlashCardsSetFromTextCreate) -> FlashCardSetRead:
-        split = set_from_text_create.text.split("\n")
-        flashcards = []
-
-        for pair in split:
-            if not pair:
-                continue
-
-            pair_split = pair.split(set_from_text_create.separator)
-            flashcard = Flashcard(front=pair_split[1], back=pair_split[0])
-            flashcards.append(flashcard)
-
+        flashcards = self.convert_text_to_flashcards(set_from_text_create.text, set_from_text_create.separator)
         flashcards_payload = jsonable_encoder(flashcards or [])
         new_set_res: InsertOneResult = self.repo.create_new_set(set_from_text_create.set_name, user_id,
                                                                 flashcards_payload)
         new_set = self.repo.get_set(new_set_res.inserted_id)
         return FlashCardSetRead.model_validate(new_set)
+
+    def convert_text_to_flashcards(self, text: str, separator: str) -> List[Flashcard]:
+        split = text.split("\n")
+        flashcards: List[Flashcard] = []
+
+        for pair in split:
+            if not pair:
+                continue
+
+            pair_split = pair.split(separator)
+            flashcard = Flashcard(front=pair_split[1], back=pair_split[0])
+            flashcards.append(flashcard)
+
+        return flashcards
 
     def update_flashcard(self, user_id: str, update_flashcard_write: UpdateFlashCard):
         self.repo.update_flashcard(user_id, update_flashcard_write.id, update_flashcard_write.set_id,
@@ -91,3 +96,7 @@ class SetsService:
 
     def delete_card(self, set_id: str, card_id: str):
         self.repo.delete_card(set_id, card_id)
+
+    def add_text_to_set(self, user_id: str, add_text_to_set: AddTextToSet):
+        flashcards = self.convert_text_to_flashcards(add_text_to_set.text, add_text_to_set.separator)
+        self.repo.add_flashcards(add_text_to_set.set_id, flashcards)

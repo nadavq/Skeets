@@ -6,7 +6,7 @@ from db.db import db_dep
 from services.sets_service import SetsService
 from core.common import user_dep
 from schema.flashcards import UpdateFlashCard, FlashCardCreate, FlashCardSetRead, \
-    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate
+    FlashCardsSetFromTextCreate, FlashCardRead, FlashCardsSetFromWordsCreate, AddTextToSet
 from services.language_service import LanguageService
 from utils.type_utils import to_bool
 
@@ -80,3 +80,7 @@ def generate_sentences_from_set(user_id: user_dep, set_id, db: db_dep):
 @router.delete('/card/{set_id}/{card_id}')
 def delete_card(user_id: user_dep, set_id: str, card_id: str, db: db_dep):
     return LanguageService(db).delete_card(set_id, card_id)
+
+@router.post('/add-text-to-set')
+def add_text_to_set(user_id: user_dep, db: db_dep, new_text: AddTextToSet):
+    return LanguageService(db).add_text_to_set(user_id, new_text)
