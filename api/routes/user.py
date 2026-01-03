@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from core.common import user_dep
 from db.db import db_dep
-from schema.user import UserCreate, UserRead
+from schema.user import UserCreate, UserRead, UserEdit
 from services.user_service import UserService
 
 router = APIRouter(prefix="/user", tags=["Users"])
@@ -23,6 +23,6 @@ def get_user_by_email(email: str, db: db_dep) -> UserRead:
     return UserService(db).get_user_by_email(email)
 
 
-@router.put("/")
-def test(s):
-    print(s)
+@router.put("/", response_model=UserRead)
+def edit_user(user_id: user_dep, user: UserEdit, db: db_dep):
+    return UserService(db).edit_user(user_id, user)

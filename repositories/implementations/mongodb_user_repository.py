@@ -49,3 +49,9 @@ class MongoDbUserRepository(IUserRepository):
         # You'd need to search all documents and match by hash, which is inefficient
         # This is a design limitation when using MongoDB with an int ID requirement
         return self.get_user_from_doc(user_document)
+
+    def edit_user(self, user: User):
+        self.collection.update_one(
+            {'_id': user.id},
+            {'$set': {'flashcards_side': user.flashcards_side}} # Assuming your User class has a to_dict() method
+        )

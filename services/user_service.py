@@ -6,7 +6,7 @@ from core.security import pwd_context
 from core.repositories_dependencies import get_user_repository, DbType, curr_db_type
 from model.user import User
 from repositories.user_repository import IUserRepository
-from schema.user import UserCreate, UserRead
+from schema.user import UserCreate, UserRead, UserEdit
 
 
 class UserService:
@@ -46,3 +46,10 @@ class UserService:
 
     def get_user(self, user_id: str):
         return self.users.get_user(user_id)
+
+    def edit_user(self, user_id: str, user: UserEdit) -> UserRead:
+        current_user = self.users.get_user(user_id)
+        current_user.flashcards_side = user.flashcards_side
+        self.users.edit_user(current_user)
+        user_edited = self.get_user(user_id)
+        return UserRead.model_validate(user_edited)

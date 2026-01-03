@@ -19,3 +19,6 @@ class IUserRepository(ABC):
     @abstractmethod
     def get_user(self, user_id: str) -> User:
         pass
+
+    def edit_user(self, user: User):
+        pass
