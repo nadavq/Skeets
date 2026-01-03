@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, field_validator
 
 from schema.enums import FlashcardSide
 
@@ -15,7 +15,11 @@ class UserRead(BaseModel):
     first_name: str
     last_name: str
     email: str
-    flashcard_side: str = Field(default=FlashcardSide.Regular)
+    flashcards_side: str = Field(default_factory=lambda: FlashcardSide.Regular)
+
+    @field_validator('flashcards_side', mode='before')
+    def set_default_if_none(cls, v):
+        return v or FlashcardSide.Regular
 
     class Config:
         from_attributes = True

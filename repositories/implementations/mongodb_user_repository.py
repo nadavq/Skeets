@@ -52,6 +52,6 @@ class MongoDbUserRepository(IUserRepository):
 
     def edit_user(self, user: User):
         self.collection.update_one(
-            {'_id': user.id},
+            {'_id': ObjectId(user.id)},
             {'$set': {'flashcards_side': user.flashcards_side}} # Assuming your User class has a to_dict() method
         )
